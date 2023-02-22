@@ -1,7 +1,5 @@
 extern crate x11_clipboard;
-use crate::{open_file, PATH, SPLIT_STR};
-use std::fs::File;
-use std::io::prelude::*;
+use crate::{ save_latest};
 
 use x11_clipboard::Clipboard;
 
@@ -34,17 +32,3 @@ pub fn monitor() {
     }
 }
 
-fn save_latest(val: String) -> std::io::Result<()> {
-    let opened_file = open_file(PATH);
-
-    match opened_file {
-        Ok(contents) => {
-            let full_data = val.to_string() + SPLIT_STR + &contents;
-            let mut file = File::create(PATH)?;
-            file.write_all(full_data.as_bytes())?;
-        }
-        Err(err) => println!("error!: {err}"),
-    }
-
-    Ok(())
-}
