@@ -15,10 +15,10 @@ fn main() {
     });
     ui::start();
 }
-pub fn open_file<P: std::convert::AsRef<std::path::Path>>(path: P) -> std::io::Result<String> {
+fn open_file<P: std::convert::AsRef<std::path::Path>>(path: P) -> std::io::Result<String> {
     let mut open_file = File::open(path)?;
     let mut contents = String::new();
-    open_file.read_to_string(&mut contents);
+    open_file.read_to_string(&mut contents).expect("error opening file");
 
     Ok(contents)
 }
