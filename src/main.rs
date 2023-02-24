@@ -1,12 +1,12 @@
 // #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")] // hide console window on Windows in release
 
-use std::fs::File;
+use std::fs::{File, self};
 use std::io::prelude::*;
 use std::{io, thread};
 mod monitor;
 mod ui;
 
-pub const PATH: &str = "./logs/buffered.bin";
+pub const PATH: &str = "./logs/items.bin";
 
 fn main() {
     thread::spawn(|| {
@@ -53,8 +53,22 @@ pub fn write_strings_to_file(file_path: &str, strings: &[String]) -> io::Result<
     Ok(())
 }
 
+fn create_file (path: &str) -> io::Result<File> {
+    let file = File::open(path);
+    match file {
+        Ok(file) => {
+            return Ok(file);
+        }
+        Err(_) =>{
+            fs::write(path, Vec::new()).expect("Could not write");
+            return File::open(path);
+        }
+    }
+}
+
 pub fn read_strings_from_file(file_path: &str) -> io::Result<Vec<String>> {
-    let mut byte_file = File::open(file_path).expect("Could not open");
+    let mut byte_file = create_file(file_path).expect("Error creating file");
+
     let mut strings = Vec::new();
     loop {
         let mut len_bytes = [0u8; 4];
