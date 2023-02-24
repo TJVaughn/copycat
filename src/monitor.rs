@@ -1,5 +1,5 @@
 extern crate x11_clipboard;
-use crate::{ save_latest};
+use crate::{read_strings_from_file, PATH, write_strings_to_file };
 
 use x11_clipboard::Clipboard;
 
@@ -16,14 +16,12 @@ pub fn monitor() {
             Ok(result) => {
                 let copied_value = String::from_utf8(result).unwrap();
                 println!("{}", copied_value);
-                match save_latest(copied_value) {
-                    Ok(_) => {
-                        println!("saved")
-                    }
-                    Err(err) => {
-                        println!("error saving file: {err}")
-                    }
-                }
+                let mut read_strings = read_strings_from_file(PATH).expect("Error reading file");
+
+                read_strings.insert(0, copied_value);
+
+                write_strings_to_file(PATH, &read_strings).expect("There was an error writing the file");
+
             }
             Err(err) => {
                 println!("war were declared: {err}")

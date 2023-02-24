@@ -2,7 +2,7 @@
 
 ## Before 
 
-`touch logs/items.txt`
+`touch logs/buffered.bin`
 
 *Debian*
 
