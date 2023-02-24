@@ -1,8 +1,6 @@
 # copycat
 
-## Before 
-
-`touch logs/buffered.bin`
+## Before development
 
 *Debian*
 
