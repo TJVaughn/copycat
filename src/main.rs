@@ -1,18 +1,27 @@
 // #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")] // hide console window on Windows in release
 
-use std::fs::{File, self};
+use std::fs::{self, File};
 use std::io::prelude::*;
 use std::{io, thread};
 mod monitor;
 mod ui;
 
-pub const PATH: &str = "./logs/items.bin";
+pub const COPIED_PATH: &str = "./logs/items.bin";
+pub const SAVED_PATH: &str = "./logs/saved.bin";
+pub const SAVED_LABELS_PATH: &str = "./logs/saved-l.bin";
+pub static mut SHOULD_OPEN_EDIT: bool = false;
 
 fn main() {
     thread::spawn(|| {
-        monitor::monitor();
+        monitor::copy_events();
     });
-    ui::start();
+    monitor::super_event();
+
+    unsafe {
+        if SHOULD_OPEN_EDIT {
+            ui::start_edit();
+        }
+    }
 }
 
 fn dedup_and_clean(strings: Vec<String>) -> io::Result<Vec<String>> {
@@ -26,6 +35,7 @@ fn dedup_and_clean(strings: Vec<String>) -> io::Result<Vec<String>> {
 
     let length = cleaned.len();
 
+    // find dup and remove, then stop the loop
     'outer: for i in 0..length {
         for x in 0..length {
             if x != i {
@@ -53,13 +63,13 @@ pub fn write_strings_to_file(file_path: &str, strings: &[String]) -> io::Result<
     Ok(())
 }
 
-fn create_file (path: &str) -> io::Result<File> {
+fn create_file(path: &str) -> io::Result<File> {
     let file = File::open(path);
     match file {
         Ok(file) => {
             return Ok(file);
         }
-        Err(_) =>{
+        Err(_) => {
             fs::write(path, Vec::new()).expect("Could not write");
             return File::open(path);
         }
