@@ -1,5 +1,9 @@
 # copycat
 
+## About
+
+This is an application which helps with clipboard management, giving a copy history and saved snippets.
+
 ## Before development
 
 *Debian*
@@ -10,4 +14,3 @@
 
 `dnf install clang clang-devel clang-tools-extra libxkbcommon-devel pkg-config openssl-devel libxcb-devel` 
 
-Thanks
