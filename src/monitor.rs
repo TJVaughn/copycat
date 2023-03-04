@@ -2,7 +2,7 @@ extern crate x11_clipboard;
 
 use std::{thread, time::Duration};
 
-use crate::{read_strings_from_file, ui, write_strings_to_file, COPIED_PATH, SHOULD_OPEN_EDIT};
+use crate::{ ui, COPIED_PATH, SHOULD_OPEN_EDIT, edit_ui,read_strings_from_file,write_strings_to_file};
 
 use device_query::{DeviceQuery, DeviceState, Keycode};
 use x11_clipboard::Clipboard;
@@ -43,7 +43,7 @@ pub fn super_event() -> bool {
 
         unsafe {
             if SHOULD_OPEN_EDIT {
-                ui::start_edit();
+                edit_ui::start_edit();
             }
         }
 
